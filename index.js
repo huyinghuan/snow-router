@@ -36,6 +36,10 @@ const  macthRouter = (pathname, match)=>{
   }
   return params
 }
+const methods = ["get", "post", "delete", "update", "patch"]
+const saveAllRouter = (pathname, controller)=>{
+  methods.forEach((method)=>{ saveRouter(method, pathname, controller)})
+}
 const saveRouter = (method, pathname, controller)=>{
   pathname = ("/"+pathname).replace(/\/+/g, "/")
   let pathArr = pathname.split('/')
@@ -66,7 +70,7 @@ const saveRouter = (method, pathname, controller)=>{
 
 class RouterURL{
   constructor(pathname){this.pathname = pathname}
-  all(controller){ saveRouter("all", this.pathname, controller);return this}
+  all(controller){ saveAllRouter(this.pathname, controller);return this}
   get(controller){ saveRouter("get", this.pathname, controller);return this}
   update(controller){ saveRouter("update", this.pathname, controller);return this}
   post(controller){ saveRouter("post", this.pathname, controller);return this}
@@ -82,7 +86,8 @@ class Router{
   post(pathname, controller){saveRouter("post", pathname, controller); return this}
   patch(pathname, controller){saveRouter("patch", pathname, controller); return this}
   delete(pathname, controller){saveRouter("delete", pathname, controller); return this}
-  all(pathname, controller){saveRouter("all", pathname, controller); return this}
+  all(pathname, controller){saveAllRouter(pathname, controller); return this}
+  use(controller){saveAllRouter("**", controller); return this}
   do(request, response){
     let method = request.method.toLowerCase()
     let urlObj = _url.parse(request.url)
@@ -93,7 +98,7 @@ class Router{
       response.end()
       return
     }
-    let queue = [].concat(ControllerPool['all']).concat(ControllerPool[method])
+    let queue = [].concat(ControllerPool[method]).reverse()
     let next = function(){
       let control = queue.pop()
       if(!control){

@@ -72,3 +72,22 @@ router.get("/a", ()=>{})
     .update("/a", ()=>{})
     .delete("/a", ()=>{})
 ```
+
+### router.use((req, resp, next)=>{})
+
+you can use this as middleware
+
+
+```
+router.use((req, resp, next)=>{console.log(1);next()})
+router.get("/a",(req, resp, next)=>{console.log(2);next()})
+router.use((req, resp, next)=>{console.log(3);next()})
+
+// result log: 1, 2, 3
+
+router.use((req, resp, next)=>{console.log(1);next()})
+router.use((req, resp, next)=>{console.log(3);next()})
+router.get("/a",(req, resp, next)=>{console.log(2);next()})
+
+// result log: 1, 3, 2
+```
