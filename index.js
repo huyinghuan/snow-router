@@ -66,33 +66,17 @@ const saveRouter = (method, pathname, controller)=>{
 
 class RouterURL{
   constructor(pathname){this.pathname = pathname}
-  get(controller){
-    saveRouter("get", this.pathname, controller)
-    return this
-  }
-  update(controller){
-    saveRouter("update", this.pathname, controller)
-    return this
-  }
-  post(controller){
-    saveRouter("post", this.pathname, controller)
-    return this
-  }
-  delete(controller){
-    saveRouter("delete", this.pathname, controller)
-    return this
-  }
-  patch(controller){
-    saveRouter("get", this.pathname, controller)
-    return this
-  }
+  all(controller){ saveRouter("all", this.pathname, controller);return this}
+  get(controller){ saveRouter("get", this.pathname, controller);return this}
+  update(controller){ saveRouter("update", this.pathname, controller);return this}
+  post(controller){ saveRouter("post", this.pathname, controller);return this}
+  delete(controller){saveRouter("delete", this.pathname, controller);return this}
+  patch(controller){saveRouter("patch", this.pathname, controller);return this}
 }
 
 class Router{
   constructor(){}
-  url(pathname){
-    return new RouterURL(pathname)
-  }
+  url(pathname){ return new RouterURL(pathname)}
   get(pathname, controller){saveRouter("get", pathname, controller); return this}
   update(pathname, controller){saveRouter("update", pathname, controller); return this}
   post(pathname, controller){saveRouter("post", pathname, controller); return this}
