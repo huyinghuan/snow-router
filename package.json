@@ -1,0 +1,23 @@
+{
+  "name": "snow-router",
+  "version": "1.0.0",
+  "description": "it snowed today, I write a simple route",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/huyinghuan/snow-router.git"
+  },
+  "keywords": [
+    "router",
+    "simple"
+  ],
+  "author": "ec.huyinghuan@gmail.com",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/huyinghuan/snow-router/issues"
+  },
+  "homepage": "https://github.com/huyinghuan/snow-router#readme"
+}
