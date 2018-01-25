@@ -1,6 +1,6 @@
 {
   "name": "snow-router",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "it snowed today, I write a simple route",
   "main": "index.js",
   "scripts": {

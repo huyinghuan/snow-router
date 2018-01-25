@@ -36,42 +36,69 @@ const  macthRouter = (pathname, match)=>{
   }
   return params
 }
+const saveRouter = (method, pathname, controller)=>{
+  pathname = ("/"+pathname).replace(/\/+/g, "/")
+  let pathArr = pathname.split('/')
+  for(let i = 0, length = pathArr.length; i < length; i++){
+    if(pathArr[i] == ""){
+      continue
+    }
+    if(pathArr[i] == "*" || pathArr[i] == "**"){
+      if(i != length - 1){
+        throw new Error(`* just can use in the path end, Error path:${pathname}`)
+      }
+      break
+    }
+    if(!/^[\:]?[A-z0-9\_\-\+\=]+$/.test(pathArr[i])){
+      throw new Error(`path must macth regexp '/^[\:]?[A-z0-9\_\-\+\=]+$/', Error path:${pathArr[i]},${pathname}`)
+    }
+  }
+  let processControl = {
+    match: pathname,
+    controller: controller
+  }
+  if(!ControllerPool[method]){
+    ControllerPool[method] = [processControl]
+  }else{
+    ControllerPool[method].push(processControl)
+  }
+}
+
+class RouterURL{
+  constructor(pathname){this.pathname = pathname}
+  get(controller){
+    saveRouter("get", this.pathname, controller)
+    return this
+  }
+  update(controller){
+    saveRouter("update", this.pathname, controller)
+    return this
+  }
+  post(controller){
+    saveRouter("post", this.pathname, controller)
+    return this
+  }
+  delete(controller){
+    saveRouter("delete", this.pathname, controller)
+    return this
+  }
+  patch(controller){
+    saveRouter("get", this.pathname, controller)
+    return this
+  }
+}
 
 class Router{
   constructor(){}
-  __all(method, pathname, controller){
-    pathname = ("/"+pathname).replace(/\/+/g, "/")
-    let pathArr = pathname.split('/')
-    for(let i = 0, length = pathArr.length; i < length; i++){
-      if(pathArr[i] == ""){
-        continue
-      }
-      if(pathArr[i] == "*" || pathArr[i] == "**"){
-        if(i != length - 1){
-          throw new Error(`* just can use in the path end, Error path:${pathname}`)
-        }
-        break
-      }
-      if(!/^[\:]?[A-z0-9\_\-\+\=]+$/.test(pathArr[i])){
-        throw new Error(`path must macth regexp '/^[\:]?[A-z0-9\_\-\+\=]+$/', Error path:${pathArr[i]},${pathname}`)
-      }
-    }
-    let processControl = {
-      match: pathname,
-      controller: controller
-    }
-    if(!ControllerPool[method]){
-      ControllerPool[method] = [processControl]
-    }else{
-      ControllerPool[method].push(processControl)
-    }
+  url(pathname){
+    return new RouterURL(pathname)
   }
-  get(pathname, controller){this.__all("get", pathname, controller)}
-  update(pathname, controller){this.__all("update", pathname, controller)}
-  post(pathname, controller){this.__all("post", pathname, controller)}
-  patch(pathname, controller){this.__all("patch", pathname, controller)}
-  delete(pathname, controller){this.__all("delete", pathname, controller)}
- 
+  get(pathname, controller){saveRouter("get", pathname, controller); return this}
+  update(pathname, controller){saveRouter("update", pathname, controller); return this}
+  post(pathname, controller){saveRouter("post", pathname, controller); return this}
+  patch(pathname, controller){saveRouter("patch", pathname, controller); return this}
+  delete(pathname, controller){saveRouter("delete", pathname, controller); return this}
+  all(pathname, controller){saveRouter("all", pathname, controller); return this}
   do(request, response){
     let method = request.method.toLowerCase()
     let urlObj = _url.parse(request.url)
