@@ -36,9 +36,8 @@ const  macthRouter = (pathname, match)=>{
   }
   return params
 }
-const methods = ["get", "post", "delete", "update", "patch"]
 const saveAllRouter = (pathname, controller)=>{
-  methods.forEach((method)=>{ saveRouter(method, pathname, controller)})
+  ["get", "post", "delete", "update", "patch"].forEach((method)=>{ saveRouter(method, pathname, controller)})
 }
 const saveRouter = (method, pathname, controller)=>{
   pathname = ("/"+pathname).replace(/\/+/g, "/")
