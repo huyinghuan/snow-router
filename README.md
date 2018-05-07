@@ -1,6 +1,7 @@
 ## Sample:
 
 ```
+//use with pure http server or express middleware
 const Router = require('snow-router')
 var router = new Router()
 router.get("**", (req, resp, next)=>{
@@ -11,9 +12,26 @@ router.get("/:a/:b", (req, resp, next)=>{
   console.log(req.params)
   resp.end()
 })
-_http.createServer(function(req, resp){
-  router.do(req, resp)
-}).listen(9999)
+
+//use with koa
+router.get("**", (ctx, next)=>{
+  console.log(1)
+  next()
+})
+router.get("/:a/:b", (ctx, next)=>{
+  console.log(ctx.request.params)
+  resp.end()
+})
+
+
+//pure http server
+_http.createServer(router.pure).listen(9999)
+
+//koa
+koaApp.use(router.koa)
+
+//express
+expressAPp.use(route.express)
 ```
 
 ## API
@@ -36,18 +54,26 @@ use`:xxx` will parse data to req.params
 e.g.
 
 ```
-router.get("/a/:id", (req, response)=>{ 
-  //when url is /a/1
-  console.log(req.params) // log is  {id:1}
+
+
+//pure or  express
+router.get("/a/:id", async (request, response, next)=>{
+  console.log(request.params) // log is  {id:1}
 })
+
+//koa
+router.get("/a/:id", async (ctx, next)=>{
+  console.log(ctx.request.params) // log is  {id:1}
+})
+
 ```
 
-### router.get(string or regexp, (request, response, next)=>{})
-### router.post(string or regexp, (request, response, next)=>{})
-### router.update(string or regexp, (request, response, next)=>{})
-### router.patch(string or regexp, (request, response, next)=>{})
-### router.delete(string or regexp, (request, response, next)=>{})
-### router.all(string or regexp, (request, response, next)=>{})
+### router.get(string or regexp, pure Function or koa Middleware or express Middleware)
+### router.post
+### router.update
+### router.patch
+### router.delete
+### router.all
 
 all of above you can use chained calls 
 e.g.
@@ -71,6 +97,20 @@ router.get("/a", ()=>{})
     .post("/a", ()=>{})
     .update("/a", ()=>{})
     .delete("/a", ()=>{})
+
+```
+
+or
+
+```
+router.url("/a").get(fn).post(fn).get("/:id", fn).del(fn)
+
+equals:
+router.get("/a", ()=>{})
+    .post("/a", ()=>{})
+    .get("/a/:id", ()=>{})
+    .delete("/a/:id", ()=>{})
+
 ```
 
 ### router.use((req, resp, next)=>{})
