@@ -189,9 +189,10 @@ class Router{
     let middleQueue = getMatchRouter(method, pathname)
     let next = function(){
       let control = middleQueue.pop()
-      //返回给koa
       if(!control){
-        return next()
+        response.statusCode = 404
+        response.end()
+        return
       }
       request.params = control.params
       control.controller(request, response, next)
