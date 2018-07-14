@@ -1,5 +1,6 @@
 const _url = require('url')
 const _path = require('path')
+const _querystring = require('querystring')
 var ControllerPool = {
   "get":[],
   "post":[],
@@ -179,6 +180,7 @@ class Router{
   pure(request, response){
     let method = request.method.toLowerCase()
     let urlObj = _url.parse(request.url)
+    let queryparams = _querystring.parse(urlObj.query)
     let pathname = urlObj.pathname.replace(/\/+/,"/")
     //不允许路径中包含*, :
     if(pathname != pathname.replace(/\*/g, "").replace(/\:/g, "")){
@@ -195,6 +197,7 @@ class Router{
         return
       }
       request.params = control.params
+      request.query = queryparams
       control.controller(request, response, next)
     }
     next()
